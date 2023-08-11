@@ -4,8 +4,19 @@
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1>Welcome to Index PAGE!</h1>
+<h2>Добро пожаловать на сайт!</h2>
+<hr/>
+<form th:action="@{/login}" th:method="get">
+    <input type="submit" value="Login">
+</form>
 
+<br/>
+
+<form th:action="@{/registration}" th:method="get">
+    <input type="submit" value="Registration">
+</form>
+
+<br/>
 
 </body>
 </html>
