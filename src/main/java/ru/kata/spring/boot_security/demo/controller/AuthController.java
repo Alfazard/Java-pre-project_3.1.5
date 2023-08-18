@@ -6,12 +6,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RegistrationService;
 import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
+
 
 /**
  * @author Alfazard on 10.08.2023
@@ -20,12 +22,12 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final UserValidator userValidator;
-    private final RegistrationService registrationService;
+    private final UserService userService;
     private final RoleService roleService;
 
-    public AuthController(UserValidator userValidator, RegistrationService registrationService, RoleService roleService) {
+    public AuthController(UserValidator userValidator, UserService userService, RoleService roleService) {
         this.userValidator = userValidator;
-        this.registrationService = registrationService;
+        this.userService = userService;
         this.roleService = roleService;
     }
 
@@ -40,23 +42,21 @@ public class AuthController {
     }
 
     @GetMapping("/registration")
-    public String userRegistrationPage(@ModelAttribute("user") User user, Model role) {
-        role.addAttribute("rolesList", roleService.getRolesList());
-
+    public String userRegistrationPage(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("rolesList", roleService.getRolesList());
         return "registration";
     }
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("user") @Valid User user,
-                                      BindingResult bindingResult, Model role){
-
+                                      BindingResult bindingResult, Model model){
         userValidator.validate(user, bindingResult);
         if(bindingResult.hasErrors()) {
-            role.addAttribute("rolesList", roleService.getRolesList());
+            model.addAttribute("rolesList", roleService.getRolesList());
             return "registration";
         }
-        registrationService.userRegistration(user);
 
+        userService.addUser(user);
         return "redirect:/login";
     }
 

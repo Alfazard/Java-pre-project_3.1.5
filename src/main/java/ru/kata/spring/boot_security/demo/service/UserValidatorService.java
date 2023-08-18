@@ -1,8 +1,8 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.stereotype.Service;
+import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 
 /**
@@ -10,11 +10,11 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
  */
 @Service
 public class UserValidatorService {
-    private final UserRepository userRepository;
-    public UserValidatorService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserDao userDao;
+    public UserValidatorService(UserDao userDao) {
+        this.userDao = userDao;
     }
     public User checkByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userDao.findByUsername(username);
     }
 }

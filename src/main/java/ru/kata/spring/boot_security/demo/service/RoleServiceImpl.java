@@ -2,8 +2,8 @@ package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.Role;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -13,22 +13,21 @@ import java.util.List;
  */
 @Service
 public class RoleServiceImpl implements RoleService{
-    private final RoleRepository roleRepository;
 
-    public RoleServiceImpl(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    private final RoleDao roleDao;
+
+    public RoleServiceImpl(RoleDao roleDao) {
+        this.roleDao = roleDao;
     }
 
     @PostConstruct
-    @Transactional(rollbackFor=Exception.class)
     public void init() {
-        roleRepository.save(new Role("ROLE_USER"));
-        roleRepository.save(new Role("ROLE_ADMIN"));
+        roleDao.save(new Role("ROLE_USER"));
+        roleDao.save(new Role("ROLE_ADMIN"));
     }
 
     @Override
     public List<Role> getRolesList() {
-        return roleRepository.findAll();
+        return roleDao.findAll();
     }
-
 }

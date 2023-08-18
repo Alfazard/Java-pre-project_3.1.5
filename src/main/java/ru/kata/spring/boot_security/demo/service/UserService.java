@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author Alfazard on 10.08.2023
  */
-public interface AdminService {
+public interface UserService {
 
     List<User> showAllUsers();
 
