@@ -14,12 +14,10 @@ import java.util.List;
  */
 @Repository
 public class UserDaoImpl implements UserDao {
-    private final RoleDao roleDao;
     @PersistenceContext(unitName = "entityManagerFactory")
     private final EntityManager entityManager;
 
-    public UserDaoImpl(RoleDao roleDao, EntityManager entityManager) {
-        this.roleDao = roleDao;
+    public UserDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -30,17 +28,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void save(User user) {
-        var roles = user.getRoles();
-        var roleList = roleDao.findAll();
-        var list = new ArrayList<Role>();
-        for (Role role : roleList) {
-            for (Role userRole : roles) {
-                if (role.getRoleName().equals(userRole.getRoleName())) {
-                    list.add(role);
-                }
-            }
-        }
-        user.setRoles(list);
         entityManager.persist(user);
     }
 
