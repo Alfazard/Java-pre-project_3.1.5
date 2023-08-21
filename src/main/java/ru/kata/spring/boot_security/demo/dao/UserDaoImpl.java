@@ -1,10 +1,12 @@
 package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.stereotype.Repository;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,10 +14,12 @@ import java.util.List;
  */
 @Repository
 public class UserDaoImpl implements UserDao {
+    private final RoleDao roleDao;
     @PersistenceContext(unitName = "entityManagerFactory")
     private final EntityManager entityManager;
 
-    public UserDaoImpl(EntityManager entityManager) {
+    public UserDaoImpl(RoleDao roleDao, EntityManager entityManager) {
+        this.roleDao = roleDao;
         this.entityManager = entityManager;
     }
 
@@ -26,6 +30,17 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void save(User user) {
+        var roles = user.getRoles();
+        var roleList = roleDao.findAll();
+        var list = new ArrayList<Role>();
+        for (Role role : roleList) {
+            for (Role userRole : roles) {
+                if (role.getRoleName().equals(userRole.getRoleName())) {
+                    list.add(role);
+                }
+            }
+        }
+        user.setRoles(list);
         entityManager.persist(user);
     }
 
@@ -46,6 +61,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void deleteById(Long id) {
+        entityManager.find(User.class, id).getRoles().clear();
         entityManager
                 .createQuery("DELETE FROM User WHERE id =:userId")
                 .setParameter("userId", id)

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Registration page</title>
@@ -7,7 +7,7 @@
 <body>
 <h2>Регистрация пользователя</h2>
 <hr/>
-<form th:method="post" th:action="@{/registration}" th:object="${user}">
+<form th:method="POST" th:action="@{/registration}" th:object="${user}">
     <label for="username">Enter the username:</label>
     <input type="text" th:field="*{username}" id="username"/>
     <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</div>
@@ -35,7 +35,7 @@
                 <input type="checkbox" name="roles"
                        th:each="role : ${rolesList}"
                        th:text="${role.getRoleName()}"
-                       th:value="${role.getId()}"
+                       th:value="${role.getRoleName()}"
                        th:field="*{roles}"
                 />
             </label>
@@ -52,7 +52,7 @@
 <br/>
 <br/>
 
-<form th:action="@{/index}" th:method="get">
+<form th:action="@{/index}" th:method="GET">
     <input type="submit" value="Main page">
 </form>
 </body>

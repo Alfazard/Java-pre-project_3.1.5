@@ -34,7 +34,7 @@
                 <input type="checkbox" name="roles"
                        th:each="role : ${rolesList}"
                        th:text="${role.getRoleName()}"
-                       th:value="${role.getId()}"
+                       th:value="${role.getRoleName()}"
                        th:field="*{roles}"
                 />
             </label>
@@ -51,7 +51,7 @@
 <br/>
 <br/>
 
-<form th:action="@{/logout}" th:method="post">
+<form th:action="@{/logout}" th:method="POST">
     <input type="submit" value="Logout">
 </form>
 </body>

@@ -6,7 +6,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -49,13 +48,12 @@ public class AuthController {
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("user") @Valid User user,
-                                      BindingResult bindingResult, Model model){
+                                      BindingResult bindingResult, Model model) {
         userValidator.validate(user, bindingResult);
         if(bindingResult.hasErrors()) {
             model.addAttribute("rolesList", roleService.getRolesList());
             return "registration";
         }
-
         userService.addUser(user);
         return "redirect:/login";
     }

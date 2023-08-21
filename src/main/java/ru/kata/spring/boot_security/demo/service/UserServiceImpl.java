@@ -14,7 +14,6 @@ import java.util.List;
  */
 @Service
 public class UserServiceImpl implements UserService {
-
     private final UserDao userDao;
     private final PasswordEncoder encoder;
 
@@ -32,6 +31,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor=Exception.class)
     public void addUser(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
+
         userDao.save(user);
     }
 
@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor=Exception.class)
     public void deleteUser(Long id) {
         userDao.deleteById(id);
     }
