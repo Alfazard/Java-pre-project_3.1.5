@@ -3,7 +3,6 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.dao.UserDaoImpl;
 import ru.kata.spring.boot_security.demo.model.Role;
@@ -18,12 +17,12 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
-    private final RoleDao roleDao;
+    private final RoleService roleService;
     private final PasswordEncoder encoder;
 
-    public UserServiceImpl(UserDaoImpl userDao, RoleDao roleDao, PasswordEncoder encoder) {
+    public UserServiceImpl(UserDaoImpl userDao, RoleService roleService, PasswordEncoder encoder) {
         this.userDao = userDao;
-        this.roleDao = roleDao;
+        this.roleService = roleService;
         this.encoder = encoder;
     }
 
@@ -71,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
     private User settingRoles(User user) {
         var roles = user.getRoles();
-        var roleList = roleDao.findAll();
+        var roleList = roleService.getRolesList();
         var list = new ArrayList<Role>();
         for (Role role : roleList) {
             for (Role userRole : roles) {
