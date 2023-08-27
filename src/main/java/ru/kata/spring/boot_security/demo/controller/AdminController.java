@@ -13,6 +13,8 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 
+import java.security.Principal;
+
 /**
  * @author Alfazard on 08.07.2023
  */
@@ -27,16 +29,21 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/adminpage")
-    public String adminPage() {
-        return "/adminpage";
-    }
 
-    @GetMapping("/usersinfo")
-    public String showUsersInfo(Model model, Model role){
+    @GetMapping()
+    public String adminPage(Model model, Model role, Principal principal){
         role.addAttribute("rolesList", roleService.getRolesList());
         model.addAttribute("users", userService.showAllUsers());
-        return "/usersinfo";
+        User princ = userService.getUserByUsername(principal.getName());
+        model.addAttribute("princ", princ);
+        model.addAttribute("newUser", new User());
+        return "admin-page";
+    }
+
+    @GetMapping("/user")
+    public String userPageInfo(Model model, Principal principal) {
+        model.addAttribute("user",userService.getUserByUsername(principal.getName()));
+        return "/user";
     }
 
     @GetMapping("/user/{id}")
@@ -55,32 +62,30 @@ public class AdminController {
     @PostMapping("/new")
     public String add(@ModelAttribute("user") User user){
         userService.addUser(user);
-        return "redirect:/admin/usersinfo";
+        return "redirect:/admin";
     }
 
     @GetMapping("/{id}/edit")
     public String updateUser(Model model, @PathVariable("id") Long id, Model role) {
         role.addAttribute("rolesList", roleService.getRolesList());
         var user = userService.getUserById(id);
-        user.setPassword(null);
         model.addAttribute("user", user);
-
-        return "/edit";
+        user.setPassword(null);
+        return "/admin";
     }
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user,
                          @PathVariable("id") Long id) {
         userService.editUser(id, user);
-
-        return "redirect:/admin/usersinfo";
+        return "redirect:/admin";
     }
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
 
-        return "redirect:/admin/usersinfo";
+        return "redirect:/admin";
     }
 
 }

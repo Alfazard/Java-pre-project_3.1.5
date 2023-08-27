@@ -8,7 +8,7 @@ import ru.kata.spring.boot_security.demo.dao.UserDaoImpl;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void addUser(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
         userDao.save(settingRoles(user));
@@ -49,29 +49,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteUser(Long id) {
         userDao.deleteById(id);
     }
 
     @Override
-    @Transactional(rollbackFor=Exception.class)
-    public void editUser(Long id, User updatedUser) {
-        User user = userDao.findById(id);
-            user.setId(updatedUser.getId());
-            user.setUsername(updatedUser.getUsername());
-            user.setEmail(updatedUser.getEmail());
-            user.setRoles(updatedUser.getRoles());
-            if (!user.getPassword().equals(updatedUser.getPassword())) {
-                user.setPassword(encoder.encode(updatedUser.getPassword()));
-
-            userDao.save(settingRoles(user));
+    @Transactional(rollbackFor = Exception.class)
+    public void editUser(Long id, User user) {
+//        Collection<Role> roles = user.getRoles();
+        User editUser = userDao.findById(id);
+        editUser.setId(user.getId());
+        editUser.setName(user.getName());
+        editUser.setLastName(user.getLastName());
+        editUser.setAge(user.getAge());
+        editUser.setUsername(user.getUsername());
+        editUser.setRoles(user.getRoles());
+        if (!editUser.getPassword().equals(user.getPassword())) {
+            editUser.setPassword(encoder.encode(user.getPassword()));
         }
+        userDao.save(settingRoles(editUser));
     }
     private User settingRoles(User user) {
         var roles = user.getRoles();
         var roleList = roleService.getRolesList();
-        var list = new ArrayList<Role>();
+        var list = new HashSet<Role>();
         for (Role role : roleList) {
             for (Role userRole : roles) {
                 if (role.getRoleName().equals(userRole.getRoleName())) {
