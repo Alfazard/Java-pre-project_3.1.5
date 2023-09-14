@@ -13,7 +13,7 @@ public interface UserDao {
     void save(User user);
 
     User findById(Long id);
-    User findByUsername(String username);
+    User findByEmail(String username);
 
     void deleteById(Long id);
 }

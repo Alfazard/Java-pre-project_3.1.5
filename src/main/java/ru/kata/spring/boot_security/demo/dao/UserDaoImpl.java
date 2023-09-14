@@ -26,7 +26,11 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void save(User user) {
-        entityManager.persist(user);
+        if (user.getId() != null) {
+            entityManager.merge(user);
+        } else {
+            entityManager.persist(user);
+        }
     }
 
     @Override
@@ -34,12 +38,12 @@ public class UserDaoImpl implements UserDao {
         return entityManager.find(User.class, id);
     }
 
-    public User findByUsername(String username) {
+    public User findByEmail(String email) {
         return entityManager
                 .createQuery(
-                        "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username=:username", User.class
+                        "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=:email", User.class
                 )
-                .setParameter("username", username)
+                .setParameter("email", email)
                 .getResultList()
                 .stream().findFirst().orElse(null);
     }

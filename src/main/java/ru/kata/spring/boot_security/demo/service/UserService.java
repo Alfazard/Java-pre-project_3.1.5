@@ -8,17 +8,15 @@ import java.util.List;
  * @author Alfazard on 10.08.2023
  */
 public interface UserService {
+    List<User> getUsers();
 
-    List<User> showAllUsers();
+    void saveUser(User user);
 
-    void addUser(User user);
+    void updateUser(User user);
 
-    User getUserById(Long id);
+    User getUser(Long id);
 
-    User getUserByUsername(String username);
+    void removeUser(Long id);
 
-    void deleteUser(Long id);
-
-    void editUser(Long id, User updatedUser);
-
+    User findByEmail(String email);
 }

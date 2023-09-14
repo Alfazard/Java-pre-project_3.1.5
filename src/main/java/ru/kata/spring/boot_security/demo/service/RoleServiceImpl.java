@@ -6,7 +6,7 @@ import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alfazard on 09.08.2023
@@ -28,7 +28,8 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public List<Role> getRolesList() {
+    public Set<Role> getRolesList() {
         return roleDao.findAll();
     }
+
 }

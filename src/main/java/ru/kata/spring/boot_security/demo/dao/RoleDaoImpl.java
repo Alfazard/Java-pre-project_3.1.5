@@ -6,7 +6,8 @@ import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Alfazard on 14.08.2023
@@ -21,8 +22,8 @@ public class RoleDaoImpl implements RoleDao{
     }
 
     @Override
-    public List<Role> findAll() {
-        return entityManager.createQuery("FROM Role", Role.class).getResultList();
+    public Set<Role> findAll() {
+        return entityManager.createQuery("FROM Role", Role.class).getResultStream().collect(Collectors.toSet());
     }
 
     @Override
