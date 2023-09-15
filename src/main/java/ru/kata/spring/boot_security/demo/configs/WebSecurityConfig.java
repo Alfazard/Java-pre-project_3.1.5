@@ -5,13 +5,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig  {
+//    extends WebSecurityConfigurerAdapter
     private final SuccessUserHandler successUserHandler;
     private final UserServiceImpl userService;
 
@@ -20,26 +21,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userService = userService;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/login", "/").permitAll()
-                .antMatchers("/user/**").hasAnyRole("USER","ADMIN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .authorizeRequests((requests) -> requests
+                .regexMatchers("/login", "/").permitAll()
+                .regexMatchers("/user/*").hasAnyRole("USER","ADMIN")
+                .regexMatchers("/admin/*").hasRole("ADMIN")
                 .anyRequest().authenticated()
-                .and()
-                .formLogin().successHandler(successUserHandler)
+                )
+                .formLogin((form) -> form
+                .successHandler(successUserHandler)
                 .loginPage("/")
                 .loginProcessingUrl("/login")
                 .usernameParameter("Email address")
                 .passwordParameter("Password")
                 .permitAll()
-                .and()
+                )
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/");
+        return http.build();
     }
 
     @Bean
