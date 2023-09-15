@@ -11,8 +11,8 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig  {
-//    extends WebSecurityConfigurerAdapter
+public class WebSecurityConfig {
+    //    extends WebSecurityConfigurerAdapter
     private final SuccessUserHandler successUserHandler;
     private final UserServiceImpl userService;
 
@@ -26,22 +26,24 @@ public class WebSecurityConfig  {
         http
                 .csrf().disable()
                 .authorizeRequests((requests) -> requests
-                .regexMatchers("/login", "/").permitAll()
-                .regexMatchers("/user/*").hasAnyRole("USER","ADMIN")
-                .regexMatchers("/admin/*").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                        .regexMatchers("/login", "/").permitAll()
+                        .regexMatchers("/user/*").hasAnyRole("USER", "ADMIN")
+                        .regexMatchers("/admin/*").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                .successHandler(successUserHandler)
-                .loginPage("/")
-                .loginProcessingUrl("/login")
-                .usernameParameter("Email address")
-                .passwordParameter("Password")
-                .permitAll()
+                        .successHandler(successUserHandler)
+                        .loginPage("/")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("Email address")
+                        .passwordParameter("Password")
+                        .permitAll()
                 )
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/");
+                .logout((logout) -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                );
         return http.build();
     }
 
