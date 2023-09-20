@@ -16,7 +16,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -28,17 +27,14 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
-    @Column(name = "firstName")
+    @Column(name = "first_name")
     private String firstName;
-    @Column(name = "lastName")
+    @Column(name = "last_name")
     private String lastName;
-    @Column(name = "age")
     private Integer age;
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(name = "password")
     private String password;
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
@@ -47,18 +43,6 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @NotEmpty(message = "Specify role")
     private Set<Role> roles;
-
-    public String getRoleNames() {
-        String result = Arrays.toString(roles
-                .stream()
-                .map(Role::getRoleName)
-                .map(r -> r.replace("ROLE_", ""))
-                .toList().toArray());
-        return result
-                .replace("[", "")
-                .replace("]", "")
-                .replace(",", "");
-    }
 
     public User() {
     }

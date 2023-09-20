@@ -12,7 +12,6 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-    //    extends WebSecurityConfigurerAdapter
     private final SuccessUserHandler successUserHandler;
     private final UserServiceImpl userService;
 
@@ -25,7 +24,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests((requests) -> requests
+                .authorizeHttpRequests((requests) -> requests
                         .regexMatchers("/login", "/").permitAll()
                         .regexMatchers("/user/*").hasAnyRole("USER", "ADMIN")
                         .regexMatchers("/admin/*").hasRole("ADMIN")
@@ -37,25 +36,23 @@ public class WebSecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("Email address")
                         .passwordParameter("Password")
-                        .permitAll()
                 )
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .permitAll()
                 );
         return http.build();
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setPasswordEncoder(getPasswordEncoder());
         authenticationProvider.setUserDetailsService(userService);
 
         return authenticationProvider;

@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,7 +27,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleService roleService;
     private final PasswordEncoder encoder;
 
-    @Autowired
     public UserServiceImpl(UserDao userDao, RoleService roleService, @Lazy PasswordEncoder encoder) {
         this.userDao = userDao;
         this.roleService = roleService;
@@ -50,14 +48,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateUser(User user) {
-        User oldUser = userDao.findByEmail(user.getEmail());
-        if (user.getPassword().isBlank()) {
-            user.setPassword(oldUser.getPassword());
-        } else {
-            user.setPassword(encoder.encode(user.getPassword()));
+        User editUser = userDao.findByEmail(user.getEmail());
+        if (!editUser.getPassword().equals(user.getPassword())) {
+            editUser.setPassword(encoder.encode(user.getPassword()));
         }
         if (user.getRoles() == null) {
-            user.setRoles(oldUser.getRoles());
+            user.setRoles(editUser.getRoles());
         }
         userDao.save(settingRoles(user));
     }

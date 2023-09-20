@@ -27,7 +27,8 @@ public class DataBaseInit {
         var roleAdmin = Set.of(new Role("ROLE_ADMIN"));
         var roleUser = Set.of(new Role("ROLE_USER"));
 
-        User admin = new User("admin", "admin", 20, "admin@mail.ru", "admin", roleAdmin);
+        User admin = new User("admin", "admin",
+                20, "admin@mail.ru", "admin", roleAdmin);
         User user = new User("user", "user",
                 30, "user@mail.ru", "user", roleUser);
         userService.saveUser(admin);
